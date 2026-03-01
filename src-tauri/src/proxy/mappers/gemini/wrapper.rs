@@ -179,7 +179,14 @@ pub fn wrap_request(
         if !gen_config.contains_key("topP") {
             gen_config.insert("topP".to_string(), json!(1.0));
         }
-
+        
+        let is_adaptive = if let Some(t) = gen_config.get("thinkingConfig") {
+            t.get("thinkingLevel").is_some() 
+                || t.get("thinkingBudget").and_then(|v| v.as_i64()) == Some(-1)
+                || (t.get("thinkingBudget").and_then(|v| v.as_u64()) == Some(32768) && is_target_claude)
+        } else {
+            false
+        };
         // [FIX] Convert v1beta thinkingLevel (string) to v1internal thinkingBudget (number).
         // Clients (e.g. OpenClaw, Cline) may send thinkingLevel which v1internal does not accept,
         // causing 400 INVALID_ARGUMENT. Convert before any budget processing below.
