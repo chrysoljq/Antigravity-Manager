@@ -33,13 +33,13 @@ jobs:
       - name: Build Backend
         run: |
           cd src-tauri
-          cargo build --release --bin antigravity-tools
+          cargo build --release --bin antigravity_tools
 
       - name: Prepare Bundle
         run: |
           mkdir -p deploy_bundle
           cp -r dist deploy_bundle/
-          cp src-tauri/target/release/antigravity-tools deploy_bundle/
+          cp src-tauri/target/release/antigravity_tools deploy_bundle/
           tar -czvf antigravity-headless-linux-x64.tar.gz -C deploy_bundle .
 
       - name: Upload Artifact
